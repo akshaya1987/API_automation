@@ -1,0 +1,152 @@
+[
+	{
+		"PN": "CZ056A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.01.00:01"
+	},
+	{
+		"PN": "CZ056A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.02.01:02"
+	},
+	{
+		"PN": "CZ056A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.02.01:76"
+	},
+	{
+		"PN": "CZ056A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.02.02:02"
+	},
+	{
+		"PN": "CZ056A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.02.02:76"
+	},
+	{
+		"PN": "L2E27A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.02.03:02"
+	},
+	{
+		"PN": "L2E27A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.02.03:76"
+	},
+	{
+		"PN": "L2E27A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.02.04:02"
+	},
+	{
+		"PN": "L2E27A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.02.04:76"
+	},
+	{
+		"PN": "L2E27A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.06.01:04"
+	},
+	{
+		"PN": "K4G10A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.06.01:10"
+	},
+	{
+		"PN": "K4G10A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.06.02:04"
+	},
+	{
+		"PN": "K4G10A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.06.02:10"
+	},
+	{
+		"PN": "K4G10A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.06.03:04"
+	},
+	{
+		"PN": "K4G10A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.06.03:10"
+	},
+	{
+		"PN": "1HA06A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.06.04:04"
+	},
+	{
+		"PN": "1HA06A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.06.04:10"
+	},
+	{
+		"PN": "1HA06A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.60.00:01"
+	},
+	{
+		"PN": "1HA06A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.60.00:75"
+	},
+	{
+		"PN": "1HA06A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.60.01:03"
+	},
+	{
+		"PN": "1HA07A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.60.02:03"
+	},
+	{
+		"PN": "1HA07A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.60.03:03"
+	},
+	{
+		"PN": "1HA07A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "10.01.01:01"
+	},
+	{
+		"PN": "1HA07A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "10.01.02:01"
+	},
+	{
+		"PN": "1HA07A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "10.01.03:01"
+	},
+	{
+		"PN": "3DB03A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.60.02:03"
+	},
+	{
+		"PN": "3DB03A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "01.60.03:03"
+	},
+	{
+		"PN": "3DB03A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "10.01.01:01"
+	},
+	{
+		"PN": "3DB03A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "10.01.02:01"
+	},
+	{
+		"PN": "3DB03A",
+		"SN": "HP20170724T",
+		"SystemErrorCode": "10.01.03:01"
+	}
+]

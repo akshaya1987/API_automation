@@ -1,0 +1,115 @@
+{
+	"info": {
+		"_postman_id": "681e9c7a-8087-fe2e-d619-24e03ab0c08f",
+		"name": "GetSolutions Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetSolution",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8806630a-904a-42a7-b80e-aaea8df2d015",
+						"type": "text/javascript",
+						"exec": [
+							"var timestamp2 = new Date().toISOString();",
+							"var timestamp1 = timestamp2.substring(0, 19)+\"Z\";",
+							"postman.setEnvironmentVariable(\"endDate\", timestamp1);",
+							"var now = new Date();",
+							"// console.log(now);",
+							"now.setDate(now.getDate()-2) ;",
+							"var tmp = now.toISOString();",
+							"// console.log(tmp)",
+							"var startDate = tmp.substring(0, 19)+\"Z\";",
+							"// console.log(startDate)",
+							"postman.setEnvironmentVariable(\"notificationTimestamp\", timestamp1);",
+							"var d = new Date();",
+							"var milliseconds = d.getTime();",
+							"// var milliseconds = 1508479709185",
+							"// Four hours window in milliseconds 4*60*60*1000",
+							"var step = 14400000;",
+							"var secret = postman.getEnvironmentVariable(\"SEALS_AUTH_SECRET\");",
+							"// var secret = \"pepper\"",
+							"var t = parseInt(milliseconds/step);",
+							"// console.log(t);",
+							"var payload = t.toString()+secret;",
+							"// console.log(payload);",
+							"var shaEncoded = CryptoJS.SHA256(payload).toString();",
+							"// console.log(shaEncoded);",
+							"postman.setEnvironmentVariable(\"SEALS_AUTH_TOKEN\", shaEncoded);"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "10338b52-8036-46ac-acbd-4fa458da1124",
+						"type": "text/javascript",
+						"exec": [
+							"console.log(\"device serial number is: \" +data['SN']);",
+							"console.log(\"Product number is: \" + data['PN']);",
+							"console.log(\"System error code is: \" +data['SystemErrorCode']);",
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"var solutionJson = jsonData.solutionJson",
+							"",
+							"solutionJson.forEach(function(entry){",
+							"    console.log(\"Printer family: \" +entry.printer_Family)",
+							"    console.log(\"Severity: \" +entry.severity)",
+							"    ",
+							"tests[\"Short description not empty\"] = entry.short_Description.length !== 0;",
+							"tests[\"Short corrective_Action not empty\"] = entry.corrective_Action.length !== 0;",
+							"tests[\"Possible cause is not empty\"] = entry.possible_Cause.length !== 0;",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Token",
+						"value": "{{SEALS_AUTH_TOKEN}}"
+					},
+					{
+						"key": "Client-ID",
+						"value": "{{SEALS_AUTH_CLIENTID}}"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "{{baseURL}}/GetSolution?PN={{PN}}&SN={{SN}}&eventCode={{SystemErrorCode}}&detectionDate={{notificationTimestamp}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"GetSolution"
+					],
+					"query": [
+						{
+							"key": "PN",
+							"value": "{{PN}}"
+						},
+						{
+							"key": "SN",
+							"value": "{{SN}}"
+						},
+						{
+							"key": "eventCode",
+							"value": "{{SystemErrorCode}}"
+						},
+						{
+							"key": "detectionDate",
+							"value": "{{notificationTimestamp}}"
+						}
+					]
+				},
+				"description": "GetDeviceUtilization"
+			},
+			"response": []
+		}
+	]
+}
