@@ -45,13 +45,14 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "10338b52-8036-46ac-acbd-4fa458da1124",
+						"id": "7ff4a2cc-86ee-4a48-a081-2c546cbbdd5c",
 						"type": "text/javascript",
 						"exec": [
+							"//var jsonData = JSON.parse(responseBody);",
+							"jsonData = pm.response.json();",
 							"console.log(\"device serial number is: \" +data['SN']);",
 							"console.log(\"Product number is: \" + data['PN']);",
 							"console.log(\"System error code is: \" +data['SystemErrorCode']);",
-							"var jsonData = JSON.parse(responseBody);",
 							"",
 							"var solutionJson = jsonData.solutionJson",
 							"",
@@ -59,9 +60,9 @@
 							"    console.log(\"Printer family: \" +entry.printer_Family)",
 							"    console.log(\"Severity: \" +entry.severity)",
 							"    ",
-							"tests[\"Short description not empty\"] = entry.short_Description.length !== 0;",
-							"tests[\"Short corrective_Action not empty\"] = entry.corrective_Action.length !== 0;",
-							"tests[\"Possible cause is not empty\"] = entry.possible_Cause.length !== 0;",
+							"//tests[\"Short description not empty\"] = entry.short_Description.length !== 0;",
+							"//tests[\"Short corrective_Action not empty\"] = entry.corrective_Action.length !== 0;",
+							"//tests[\"Possible cause is not empty\"] = entry.possible_Cause.length !== 0;",
 							"});"
 						]
 					}
