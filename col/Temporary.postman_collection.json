@@ -1,0 +1,43 @@
+{
+	"info": {
+		"_postman_id": "925b76cb-bccd-4809-a63c-a33942217f0b",
+		"name": "Temporary",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "https://httpbin.org/get",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5a5ea82d-6552-41ca-add1-efb6c8f2c18c",
+						"type": "text/javascript",
+						"exec": [
+							"jsonData = pm.response.json();",
+							"console.log(jsonData.headers.Connection)",
+							"//tests[\"Host\"] = jsonData.headers.Host == \"httpbin.org\";"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://httpbin.org/get",
+					"protocol": "https",
+					"host": [
+						"httpbin",
+						"org"
+					],
+					"path": [
+						"get"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
