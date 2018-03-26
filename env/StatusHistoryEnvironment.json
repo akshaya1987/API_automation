@@ -1,6 +1,6 @@
 {
-  "id": "0266cacc-2e0b-997a-8525-ed36491ffef8",
-  "name": "SEALS_Itg Migration",
+  "id": "3433fd6e-14a7-4783-8044-30c87783fdc7",
+  "name": "StatusHistory_Production",
   "values": [
     {
       "key": "baseURL",
@@ -10,55 +10,43 @@
     },
     {
       "key": "SN",
-      "value": "SG51S1R001",
+      "value": "ES68921009",
       "enabled": true,
       "type": "text"
     },
     {
       "key": "PN",
-      "value": "1HA07A",
+      "value": "M0P44B",
       "enabled": true,
       "type": "text"
     },
     {
-      "enabled": false,
-      "key": "Status",
-      "type": "text",
-      "value": "TRUE"
-    },
-    {
       "key": "startDate",
-      "value": "2018-02-15T00:00:00Z",
+      "value": "2018-01-29T00:00:00Z",
       "enabled": true,
       "type": "text"
     },
     {
       "key": "endDate",
-      "value": "2018-03-14T13:04:37Z",
+      "value": "2018-03-26T04:44:17Z",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "SEALS_AUTH_CLIENTID",
+      "value": "PrintOS",
       "enabled": true,
       "type": "text"
     },
     {
       "key": "notificationTimestamp",
-      "value": "2018-03-26T07:23:35Z",
-      "enabled": true,
-      "type": "text"
-    },
-    {
-      "key": "SE",
-      "value": "{{SystemErrorCode}}",
-      "enabled": true,
-      "type": "text"
-    },
-    {
-      "key": "SystemErrorCode",
-      "value": "49.03.01:09",
+      "value": "2018-03-26T09:45:28Z",
       "enabled": true,
       "type": "text"
     },
     {
       "key": "SEALS_AUTH_TOKEN",
-      "value": "334ea4f5ab67120130dedaba165645633fa4701cba0c1c0ae5d87c686884f747",
+      "value": "ffb97b198015a3ba733ec5de79b838e2b608409ece2cd6d07293506e73e0a692",
       "enabled": true,
       "type": "text"
     },
@@ -69,13 +57,25 @@
       "type": "text"
     },
     {
-      "key": "SEALS_AUTH_CLIENTID",
-      "value": "PrintOS",
+      "key": "totlaPrintingTimeInServiceCenter",
+      "value": "9",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "totalReadyCounterTimeInServiceCenter",
+      "value": "262",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "totalDownTimeInServiceCenter",
+      "value": "0",
       "enabled": true,
       "type": "text"
     }
   ],
   "_postman_variable_scope": "environment",
-  "_postman_exported_at": "2018-03-26T07:27:55.680Z",
+  "_postman_exported_at": "2018-03-26T09:46:02.320Z",
   "_postman_exported_using": "Postman/6.0.10"
 }

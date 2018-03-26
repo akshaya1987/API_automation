@@ -45,7 +45,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "bfa588f3-db63-4f8c-8435-ee85a19618df",
+						"id": "e450dfa5-9dd6-415a-80c1-531ca8a7c2d2",
 						"type": "text/javascript",
 						"exec": [
 							"jsonData = JSON.parse(responseBody);",
@@ -197,7 +197,6 @@
 							"",
 							"pm.test('Schema is valid', function() {",
 							"  pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
-							"  ",
 							"});"
 						]
 					}
@@ -247,7 +246,7 @@
 			},
 			"response": [
 				{
-					"id": "17c004ec-2f1c-4272-a51f-6b209612fb95",
+					"id": "9a175daa-0b33-47e7-825e-dd80147b233d",
 					"name": "GetPrinterStatusHistory",
 					"originalRequest": {
 						"method": "GET",
