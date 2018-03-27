@@ -11,21 +11,21 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "3b796ce1-5269-4c6f-a3d4-eaff3cd37fa4",
+						"id": "1d04c366-ffaa-4dc8-bbf6-2675fa16322b",
 						"type": "text/javascript",
 						"exec": [
 							"// Parse URL for query parameters",
 							"var paramsString = request.url.split('?')[1];",
-							"console.log (\"ParamString is : \"+paramsString)",
+							"//console.log (\"ParamString is : \"+paramsString)",
 							"//console.log (request.url)",
-							"console.log(\"Hello: \"+paramsString.split('&'))",
+							"//console.log(\"Hello: \"+paramsString.split('&'))",
 							"var eachParamArray = paramsString.split('&');",
 							"var params = {};",
 							"eachParamArray.forEach((param) => {",
 							"    var key = param.split('=')[0];",
 							"   ",
 							"    var value = param.split('=')[1];",
-							"     console.log (key + \" \" + \" \" + value)",
+							"    // console.log (key + \" \" + \" \" + value)",
 							"    Object.assign(params, {[key]: value});",
 							"});",
 							"//console.log(params); // this is object with request params as key value pairs",
@@ -35,7 +35,7 @@
 							"    var jsonData = pm.response.json();",
 							"",
 							"    if (jsonData.solutionJson ){",
-							"        console.log(jsonData);",
+							"        //console.log(jsonData);",
 							"            tests[\"Solution Found for: \" + requestPN + \" - \"+data.SystemErrorCode]= true",
 							"    ",
 							"    } else {",
@@ -86,8 +86,7 @@
 				"header": [
 					{
 						"key": "X-API-KEY",
-						"value": "jmKUZ7mePwqKXpU2hB2MATfPYMSjhu6ryrKUYzfG",
-						"disabled": true
+						"value": "jmKUZ7mePwqKXpU2hB2MATfPYMSjhu6ryrKUYzfG"
 					},
 					{
 						"key": "Token",
@@ -96,6 +95,10 @@
 					{
 						"key": "Client-ID",
 						"value": "{{SEALS_AUTH_CLIENTID}}"
+					},
+					{
+						"key": "notificationTimestamp",
+						"value": "{{notificationTimestamp}}"
 					}
 				],
 				"body": {
@@ -103,7 +106,7 @@
 					"raw": "{\r\n\"grant_type\": \"password\",\r\n\"client_id\": \"elfpsolutions.admin@groups.hp.com\",\r\n\"username\": \"lfpsolutions.admin@groups.hp.com\",\r\n\"password\": \"r*6NPyCJogC]\"\r\n}\r\n"
 				},
 				"url": {
-					"raw": "{{baseURL}}/GetSolution?PN={{PN}}&eventCode={{SystemErrorCode}}&SN={{SN}}&detectionDate=2017-04-24T09:45:29Z",
+					"raw": "{{baseURL}}/GetSolution?PN={{PN}}&eventCode={{SystemErrorCode}}&SN={{SN}}&detectionDate={{notificationTimestamp}}",
 					"host": [
 						"{{baseURL}}"
 					],
@@ -125,7 +128,7 @@
 						},
 						{
 							"key": "detectionDate",
-							"value": "2017-04-24T09:45:29Z"
+							"value": "{{notificationTimestamp}}"
 						}
 					]
 				},
