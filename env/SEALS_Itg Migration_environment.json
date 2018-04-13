@@ -1,0 +1,99 @@
+{
+  "id": "d5ccd74d-ccf9-4ca2-8ba8-e9dbb9335f25",
+  "name": "SEALS_Itg Migration",
+  "values": [
+    {
+      "key": "baseURL",
+      "value": "https://seals-itg.hpcloud.hp.com/SEALSRestAPI",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "SN",
+      "value": "SG51S1R001",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "PN",
+      "value": "1HA07A",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "Status",
+      "value": "TRUE",
+      "type": "text",
+      "enabled": false
+    },
+    {
+      "key": "startDate",
+      "value": "2018-02-10T00:00:00Z",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "endDate",
+      "value": "2018-04-10T00:00:00Z",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "notificationTimestamp",
+      "value": "2018-04-09T11:48:28Z",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "SE",
+      "value": "{{SystemErrorCode}}",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "SystemErrorCode",
+      "value": "49.03.01:09",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "SEALS_AUTH_TOKEN",
+      "value": "c61198101687bc1e2c955262b55081689ccf25c9a2b44227525fe44ef72dd279",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "SEALS_AUTH_SECRET",
+      "value": "xuVLI!G*0RgI&B2nykYv7phzRA!N^AfI",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "SEALS_AUTH_CLIENTID",
+      "value": "PrintOS",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "notificationTimestamp",
+      "value": "2018-04-09T11:48:28Z",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "eventTypeList",
+      "value": "REPLACE,CHECK_AND_CLEAN,Connectivity Printing Reseats,PH_INSERT,HARD_CLEANING,REARM_CARR,Thermal Reseat,REPLACE_ALARM",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "colorsList",
+      "value": "MK/C,Y/M,Lm/Lc,Optmizer",
+      "enabled": true,
+      "type": "text"
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2018-04-13T05:09:58.926Z",
+  "_postman_exported_using": "Postman/6.0.10"
+}
