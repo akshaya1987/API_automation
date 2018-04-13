@@ -1,0 +1,305 @@
+{
+	"info": {
+		"_postman_id": "c08f1cbd-c9cc-4831-9a63-58ff56bbd3ef",
+		"name": "PrintHeadInfo validator",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetPrintheadInfo",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "160595f0-af84-4d2b-91c1-c00fcd453bae",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "85991b80-6810-4201-a2da-023e24e97ecf",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = pm.response.json()",
+							"var serialNumber = jsonData.serial_Number;",
+							"var productNumber = jsonData.product_Number;",
+							"var printHeadEvent = jsonData.print_Head_Event",
+							"",
+							"// validating the schema",
+							"",
+							"var schema = {",
+							"  \"$id\": \"http://example.com/example.json\",",
+							"  \"type\": \"object\",",
+							"  \"definitions\": {},",
+							"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",",
+							"  \"properties\": {",
+							"    \"product_Number\": {",
+							"      \"$id\": \"/properties/product_Number\",",
+							"      \"type\": \"string\",",
+							"      \"title\": \"The Product_number Schema \",",
+							"      \"default\": \"\",",
+							"      \"examples\": [",
+							"        \"1HA07A\"",
+							"      ]",
+							"    },",
+							"    \"serial_Number\": {",
+							"      \"$id\": \"/properties/serial_Number\",",
+							"      \"type\": \"string\",",
+							"      \"title\": \"The Serial_number Schema \",",
+							"      \"default\": \"\",",
+							"      \"examples\": [",
+							"        \"SG51S1R001\"",
+							"      ]",
+							"    },",
+							"    \"start_Date\": {",
+							"      \"$id\": \"/properties/start_Date\",",
+							"      \"type\": \"string\",",
+							"      \"title\": \"The Start_date Schema \",",
+							"      \"default\": \"\",",
+							"      \"examples\": [",
+							"        \"2018-01-02T00:00:00Z\"",
+							"      ]",
+							"    },",
+							"    \"end_Date\": {",
+							"      \"$id\": \"/properties/end_Date\",",
+							"      \"type\": \"string\",",
+							"      \"title\": \"The End_date Schema \",",
+							"      \"default\": \"\",",
+							"      \"examples\": [",
+							"        \"2018-02-23T14:23:41Z\"",
+							"      ]",
+							"    },",
+							"    \"status\": {",
+							"      \"$id\": \"/properties/status\",",
+							"      \"type\": \"array\",",
+							"      \"items\": {",
+							"        \"$id\": \"/properties/status/items\",",
+							"        \"type\": \"object\",",
+							"        \"properties\": {",
+							"          \"start_TS\": {",
+							"            \"$id\": \"/properties/status/items/properties/start_TS\",",
+							"            \"type\": \"string\",",
+							"            \"title\": \"The Start_ts Schema \",",
+							"            \"default\": \"\",",
+							"            \"examples\": [",
+							"              \"2017-12-22 13:21:23.000000\"",
+							"            ]",
+							"          },",
+							"          \"end_TS\": {",
+							"            \"$id\": \"/properties/status/items/properties/end_TS\",",
+							"            \"type\": \"string\",",
+							"            \"title\": \"The End_ts Schema \",",
+							"            \"default\": \"\",",
+							"            \"examples\": [",
+							"              \"2018-01-02 12:49:36.183000\"",
+							"            ]",
+							"          },",
+							"          \"channel\": {",
+							"            \"$id\": \"/properties/status/items/properties/channel\",",
+							"            \"type\": \"string\",",
+							"            \"title\": \"The Channel Schema \",",
+							"            \"default\": \"\",",
+							"            \"examples\": [",
+							"              \"oee\"",
+							"            ]",
+							"          },",
+							"          \"status\": {",
+							"            \"$id\": \"/properties/status/items/properties/status\",",
+							"            \"type\": \"string\",",
+							"            \"title\": \"The Status Schema \",",
+							"            \"default\": \"\",",
+							"            \"examples\": [",
+							"              \"IDLE\"",
+							"            ]",
+							"          }",
+							"        }",
+							"      }",
+							"    }",
+							"  }",
+							"}",
+							"",
+							"pm.test('Schema is valid', function() {",
+							"  pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
+							"});",
+							"",
+							"//Verifying whether the Serial Number and Product Number sent in the request matches the Serial Number and Product Number received in the response",
+							"",
+							"var values = {};",
+							"var paramsString = request.url.split('?')[1];",
+							"var eachParamArray = paramsString.split('&');",
+							"eachParamArray.forEach(function(param){",
+							"    var key = param.split('=')[0];",
+							"    var value = param.split('=')[1];",
+							"    values[key] = value",
+							"});",
+							"  tests[\"Serial number and product number sent in the request matches the serial number and product number received in the response\"] = values.SN === serialNumber && values.PN === productNumber;",
+							"",
+							"",
+							" if (printHeadEvent.length !=0)",
+							" {      ",
+							"        var startDate = new Date(values.startDate)",
+							"        var endDate = new Date(values.endDate)",
+							"        var eventTypeList = pm.environment.get(\"eventTypeList\");",
+							"        var colorsList = pm.environment.get(\"colorsList\");",
+							"        var eventTypeSplitString = eventTypeList.split(',');",
+							"        var colorSplitString = colorsList.split(',');",
+							"        var eventTimeStampWithinDateRange = true;",
+							"        var eventTypeMatchesListItems = true;",
+							"        //var EVENT_TYPE_FLAG = false;",
+							"        var colorMatchesListItems = true;",
+							"        //var COLOR_FLAG = false;",
+							" ",
+							"        printHeadEvent.forEach(function(entry){",
+							"        var eventFailCoount = 0;",
+							"        var colorFailCount = 0;",
+							"        var responseEventTimestamp = new Date(entry.event_Timestamp);",
+							"            ",
+							"//Verifying whether the \"event_Timestamps\" are within the start and end dates.",
+							"",
+							"        if(eventTimeStampWithinDateRange && !(responseEventTimestamp >= startDate && responseEventTimestamp <= endDate))",
+							"            {",
+							"                eventTimeStampWithinDateRange = false;",
+							"            }",
+							"                ",
+							"//Verifying whether all event_TYPE values are members of a specified comma separated list from the eventTypeList environment variable.",
+							"",
+							"        for(var i=0; i<=eventTypeSplitString.length-1; i++)",
+							"            {",
+							"                if(entry.event_TYPE == eventTypeSplitString[i])",
+							"                    {",
+							"                        //EVENT_TYPE_FLAG = true;",
+							"                        break;",
+							"                    }",
+							"                    else",
+							"                    {",
+							"                        //EVENT_TYPE_FLAG = false;",
+							"                        eventFailCoount ++;",
+							"                        if(eventFailCoount == eventTypeSplitString.length)",
+							"                        {",
+							"                            eventTypeMatchesListItems = false;",
+							"                        }",
+							"                    }",
+							"            }",
+							"             ",
+							" //Verifying whether all color values are members of a specified comma separated list from the colorsList environment variable.",
+							"",
+							"        for(var i=0; i<=colorSplitString.length-1; i++)",
+							"            {",
+							"                if(entry.color == colorSplitString[i])",
+							"                    {",
+							"                        //COLOR_FLAG = true;",
+							"                        break;",
+							"                    }",
+							"                    else",
+							"                    {",
+							"                        //COLOR_FLAG = false;",
+							"                        colorFailCount ++;",
+							"                        if(colorFailCount == colorSplitString.length)",
+							"                        {",
+							"                            colorMatchesListItems = false;",
+							"                        }",
+							"                    }",
+							"            }",
+							"    });",
+							"            tests[\"event_Timestamps are within the start and end dates\"] = eventTimeStampWithinDateRange === true;",
+							"            tests[\"All the event_TYPE values are members of eventTypeList environment variable\"] = eventTypeMatchesListItems == true;",
+							"            tests[\"All the color values are members of colorsList environment variable\"] = colorMatchesListItems === true;",
+							"}",
+							"",
+							"else",
+							" {",
+							"    console.log(\"There is no print head events for the selected date range!\");",
+							" }",
+							" "
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Token",
+						"value": "{{SEALS_AUTH_TOKEN}}"
+					},
+					{
+						"key": "Client-ID",
+						"value": "{{SEALS_AUTH_CLIENTID}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseURL}}/GetPrintheadInfo?SN={{SN}}&PN={{PN}}&startDate={{startDate}}&endDate={{endDate}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"GetPrintheadInfo"
+					],
+					"query": [
+						{
+							"key": "SN",
+							"value": "{{SN}}"
+						},
+						{
+							"key": "PN",
+							"value": "{{PN}}"
+						},
+						{
+							"key": "startDate",
+							"value": "{{startDate}}"
+						},
+						{
+							"key": "endDate",
+							"value": "{{endDate}}"
+						}
+					]
+				},
+				"description": "GetDeviceUtilization"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "c1beae00-d836-4324-85e6-491519c35152",
+				"type": "text/javascript",
+				"exec": [
+					"var d = new Date();",
+					"var milliseconds = d.getTime();",
+					"// var milliseconds = 1508479709185",
+					"// Four hours window in milliseconds 4*60*60*1000",
+					"var step = 14400000;",
+					"var secret = postman.getEnvironmentVariable(\"SEALS_AUTH_SECRET\");",
+					"// var secret = \"pepper\"",
+					"var t = parseInt(milliseconds/step);",
+					"// console.log(t);",
+					"var payload = t.toString()+secret;",
+					"// console.log(payload);",
+					"var shaEncoded = CryptoJS.SHA256(payload).toString();",
+					"// console.log(shaEncoded);",
+					"postman.setEnvironmentVariable(\"SEALS_AUTH_TOKEN\", shaEncoded);"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "2697940f-1148-46b0-8e36-df299e16ce90",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
