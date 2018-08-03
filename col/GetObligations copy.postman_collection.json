@@ -1,0 +1,879 @@
+{
+	"info": {
+		"_postman_id": "bd5757c0-3acf-4efe-b4fd-601a71e341bd",
+		"name": "GetObligations copy",
+		"description": "This collection collects the required data from the ‘/GetObligations’ API and stores it in an environment variable to be exported as a JSON file for using as input for other APIs. Also verifies whether the obligations are proper, has warranty dates and has service contract dates.\n\nUsing ‘/ValidateDevice’ API, will verify whether the device is whitelisted. If device is in whitelist then ‘/IsPrinterEntitled’ and ‘/IsPrinterUnderSupportContract’ API will be validated to check the following \n\n- Device in white list\n- Entitlement consistent with SEALS\n- Is under support contract\n- Service Contract consistent with SEALS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"_postman_id": "be806d51-bef3-40d8-860c-79dbef327cc1",
+			"name": "GetObligations",
+			"item": [
+				{
+					"_postman_id": "25d2698b-c5b2-4cb9-8862-4874eac5928f",
+					"name": "GetObligations",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "a67202bb-4526-4e89-96e2-4e2713276d58",
+								"type": "text/javascript",
+								"exec": [
+									"// I like this very much, set up the environment in the first run, independently of current setup (thumbs up)",
+									"var iteration = pm.info.iteration;",
+									"",
+									"if (iteration === 0) {",
+									"    pm.environment.set(\"outputJSON\", \"[]\");",
+									"}"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "f8bc15f9-cf59-4241-b4d3-84e7ae5f5a4e",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"var serialNumber = jsonData.serialNumber;",
+									"var productNumber = jsonData.productID;",
+									"var hasWarrantyDates = false;",
+									"var hasServiceContractDates = false;",
+									"var result = {};",
+									"var finalResultArray = JSON.parse(pm.environment.get(\"outputJSON\"));",
+									"var jsonFormattedString;",
+									"var properResponse = false;",
+									"var existsIndicator = jsonData.existsIndicator;",
+									"var currentIteration = parseInt(pm.info.iteration) + 1;",
+									"var finalIteration = parseInt(pm.info.iterationCount);",
+									"",
+									"// Extracting the parameters sent to the original request",
+									"",
+									"var params = {};",
+									"var paramsString = request.url.split('?')[1];",
+									"var eachParamArray = paramsString.split('&');",
+									"eachParamArray.forEach(function(param) {",
+									"    var key = param.split('=')[0];",
+									"    var value = param.split('=')[1];",
+									"    params[key] = value;",
+									"});",
+									"",
+									"var requestPN = params.serialNumber;",
+									"var requestSN = params.productID;",
+									"",
+									"// Verifying whether the response is proper by validating the schema.",
+									"var schema = {",
+									"    \"$id\": \"http://example.com/example.json\",",
+									"    \"type\": [\"object\", \"null\"],",
+									"    \"definitions\": {},",
+									"    \"$schema\": \"http://json-schema.org/draft-07/schema#\",",
+									"    \"properties\": {",
+									"        \"serialNumber\": {",
+									"            \"$id\": \"/properties/serialNumber\",",
+									"            \"type\": [\"string\", \"null\"],",
+									"            \"title\": \"The Serialnumber Schema \",",
+									"            \"default\": \"\",",
+									"            \"examples\": [",
+									"                \"MY61T1901V\"",
+									"            ]",
+									"        },",
+									"        \"productID\": {",
+									"            \"$id\": \"/properties/productID\",",
+									"            \"type\": [\"string\", \"null\"],",
+									"            \"title\": \"The Productid Schema \",",
+									"            \"default\": \"\",",
+									"            \"examples\": [",
+									"                \"V7L47A\"",
+									"            ]",
+									"        },",
+									"        \"shipToCountry\": {",
+									"            \"$id\": \"/properties/shipToCountry\",",
+									"            \"type\": [\"string\", \"null\"],",
+									"            \"title\": \"The Shiptocountry Schema \",",
+									"            \"default\": \"\",",
+									"            \"examples\": [",
+									"                \"\"",
+									"            ]",
+									"        },",
+									"        \"entitlementCheckDate\": {",
+									"            \"$id\": \"/properties/entitlementCheckDate\",",
+									"            \"type\": [\"string\", \"null\"],",
+									"            \"title\": \"The Entitlementcheckdate Schema \",",
+									"            \"default\": \"\",",
+									"            \"examples\": [",
+									"                \"2018-06-26\"",
+									"            ]",
+									"        },",
+									"        \"productDescription\": {",
+									"            \"$id\": \"/properties/productDescription\",",
+									"            \"type\": [\"string\", \"null\"],",
+									"            \"title\": \"The Productdescription Schema \",",
+									"            \"default\": \"\",",
+									"            \"examples\": [",
+									"                \"\"",
+									"            ]",
+									"        },",
+									"        \"errorMessage\": {",
+									"            \"$id\": \"/properties/errorMessage\",",
+									"            \"type\": [\"string\", \"null\"],",
+									"            \"title\": \"The Errormessage Schema \",",
+									"            \"default\": \"\",",
+									"            \"examples\": [",
+									"                \"WARNING: Warranty Start Date based on product introduction date\"",
+									"            ]",
+									"        },",
+									"        \"existsIndicator\": {",
+									"            \"$id\": \"/properties/existsIndicator\",",
+									"            \"type\": [\"string\", \"null\"],",
+									"            \"title\": \"The Existsindicator Schema \",",
+									"            \"default\": \"\",",
+									"            \"examples\": [",
+									"                \"FALSE\"",
+									"            ]",
+									"        },",
+									"        \"links\": {",
+									"            \"$id\": \"/properties/links\",",
+									"            \"type\": [\"array\", \"null\"],",
+									"        },",
+									"        \"_embedded\": {",
+									"            \"$id\": \"/properties/_embedded\",",
+									"            \"type\": [\"object\", \"null\"],",
+									"            \"properties\": {",
+									"                \"carepack\": {",
+									"                    \"$id\": \"/properties/_embedded/properties/carepack\",",
+									"                    \"type\": [\"array\", \"null\"],",
+									"                },",
+									"                \"contract\": {",
+									"                    \"$id\": \"/properties/_embedded/properties/contract\",",
+									"                    \"type\": [\"array\", \"null\"],",
+									"                },",
+									"                \"warranty\": {",
+									"                    \"$id\": \"/properties/_embedded/properties/warranty\",",
+									"                    \"type\": [\"array\", \"null\"],",
+									"                    \"items\": {",
+									"                        \"$id\": \"/properties/_embedded/properties/warranty/items\",",
+									"                        \"type\": [\"object\", \"null\"],",
+									"                        \"properties\": {",
+									"                            \"overallWarrantyStartDate\": {",
+									"                                \"$id\": \"/properties/_embedded/properties/warranty/items/properties/overallWarrantyStartDate\",",
+									"                                \"type\": [\"string\", \"null\"],",
+									"                                \"title\": \"The Overallwarrantystartdate Schema \",",
+									"                                \"default\": \"\",",
+									"                                \"examples\": [",
+									"                                    \"2016-08-01\"",
+									"                                ]",
+									"                            },",
+									"                            \"overallWarrantyEndDate\": {",
+									"                                \"$id\": \"/properties/_embedded/properties/warranty/items/properties/overallWarrantyEndDate\",",
+									"                                \"type\": [\"string\", \"null\"],",
+									"                                \"title\": \"The Overallwarrantyenddate Schema \",",
+									"                                \"default\": \"\",",
+									"                                \"examples\": [",
+									"                                    \"2017-07-31\"",
+									"                                ]",
+									"                            },",
+									"                            \"startDate\": {",
+									"                                \"$id\": \"/properties/_embedded/properties/warranty/items/properties/startDate\",",
+									"                                \"type\": [\"string\", \"null\"],",
+									"                                \"title\": \"The Startdate Schema \",",
+									"                                \"default\": \"\",",
+									"                                \"examples\": [",
+									"                                    \"2016-08-01\"",
+									"                                ]",
+									"                            },",
+									"                            \"endDate\": {",
+									"                                \"$id\": \"/properties/_embedded/properties/warranty/items/properties/endDate\",",
+									"                                \"type\": [\"string\", \"null\"],",
+									"                                \"title\": \"The Enddate Schema \",",
+									"                                \"default\": \"\",",
+									"                                \"examples\": [",
+									"                                    \"2017-07-31\"",
+									"                                ]",
+									"                            },",
+									"                            \"active\": {",
+									"                                \"$id\": \"/properties/_embedded/properties/warranty/items/properties/active\",",
+									"                                \"type\": [\"string\", \"null\"],",
+									"                                \"title\": \"The Active Schema \",",
+									"                                \"default\": \"\",",
+									"                                \"examples\": [",
+									"                                    \"FALSE\"",
+									"                                ]",
+									"                            },",
+									"                            \"status\": {",
+									"                                \"$id\": \"/properties/_embedded/properties/warranty/items/properties/status\",",
+									"                                \"type\": [\"string\", \"null\"],",
+									"                                \"title\": \"The Status Schema \",",
+									"                                \"default\": \"\",",
+									"                                \"examples\": [",
+									"                                    \"X\"",
+									"                                ]",
+									"                            },",
+									"                            \"warrantyDeterminationDescription\": {",
+									"                                \"$id\": \"/properties/_embedded/properties/warranty/items/properties/warrantyDeterminationDescription\",",
+									"                                \"type\": [\"string\", \"null\"],",
+									"                                \"title\": \"The Warrantydeterminationdescription Schema \",",
+									"                                \"default\": \"\",",
+									"                                \"examples\": [",
+									"                                    \"Introduction\"",
+									"                                ]",
+									"                            },",
+									"                            \"factoryWarrantyTermCode\": {",
+									"                                \"$id\": \"/properties/_embedded/properties/warranty/items/properties/factoryWarrantyTermCode\",",
+									"                                \"type\": [\"string\", \"null\"],",
+									"                                \"title\": \"The Factorywarrantytermcode Schema \",",
+									"                                \"default\": \"\",",
+									"                                \"examples\": [",
+									"                                    \"A001\"",
+									"                                ]",
+									"                            },",
+									"                            \"factoryWarrantyStartDate\": {",
+									"                                \"$id\": \"/properties/_embedded/properties/warranty/items/properties/factoryWarrantyStartDate\",",
+									"                                \"type\": [\"string\", \"null\"],",
+									"                                \"title\": \"The Factorywarrantystartdate Schema \",",
+									"                                \"default\": \"\",",
+									"                                \"examples\": [",
+									"                                    \"2016-08-01\"",
+									"                                ]",
+									"                            },",
+									"                            \"factoryWarrantyEndDate\": {",
+									"                                \"$id\": \"/properties/_embedded/properties/warranty/items/properties/factoryWarrantyEndDate\",",
+									"                                \"type\": [\"string\", \"null\"],",
+									"                                \"title\": \"The Factorywarrantyenddate Schema \",",
+									"                                \"default\": \"\",",
+									"                                \"examples\": [",
+									"                                    \"2017-07-31\"",
+									"                                ]",
+									"                            },",
+									"                            \"offerCode\": {",
+									"                                \"$id\": \"/properties/_embedded/properties/warranty/items/properties/offerCode\",",
+									"                                \"type\": [\"string\", \"null\"],",
+									"                                \"title\": \"The Offercode Schema \",",
+									"                                \"default\": \"\",",
+									"                                \"examples\": [",
+									"                                    \"HA151AW\"",
+									"                                ]",
+									"                            },",
+									"                            \"offerDescription\": {",
+									"                                \"$id\": \"/properties/_embedded/properties/warranty/items/properties/offerDescription\",",
+									"                                \"type\": [\"string\", \"null\"],",
+									"                                \"title\": \"The Offerdescription Schema \",",
+									"                                \"default\": \"\",",
+									"                                \"examples\": [",
+									"                                    \"Wty: HP HW Maintenance Onsite Support\"",
+									"                                ]",
+									"                            },",
+									"                            \"salesOrderNumber\": {",
+									"                                \"$id\": \"/properties/_embedded/properties/warranty/items/properties/salesOrderNumber\",",
+									"                                \"type\": [\"string\", \"null\"],",
+									"                                \"title\": \"The Salesordernumber Schema \",",
+									"                                \"default\": \"\",",
+									"                                \"examples\": [",
+									"                                    \"\"",
+									"                                ]",
+									"                            },",
+									"                            \"covWindow\": {",
+									"                                \"$id\": \"/properties/_embedded/properties/warranty/items/properties/covWindow\",",
+									"                                \"type\": [\"string\", \"null\"],",
+									"                                \"title\": \"The Covwindow Schema \",",
+									"                                \"default\": \"\",",
+									"                                \"examples\": [",
+									"                                    \"STD\"",
+									"                                ]",
+									"                            },",
+									"                            \"responseCommitment\": {",
+									"                                \"$id\": \"/properties/_embedded/properties/warranty/items/properties/responseCommitment\",",
+									"                                \"type\": [\"string\", \"null\"],",
+									"                                \"title\": \"The Responsecommitment Schema \",",
+									"                                \"default\": \"\",",
+									"                                \"examples\": [",
+									"                                    \"RESPONSE_TIME-NCD\"",
+									"                                ]",
+									"                            },",
+									"                            \"links\": {",
+									"                                \"$id\": \"/properties/_embedded/properties/warranty/items/properties/links\",",
+									"                                \"type\": [\"array\", \"null\"],",
+									"                            }",
+									"                        }",
+									"                    }",
+									"                }",
+									"            }",
+									"        }",
+									"    }",
+									"};",
+									"properResponse = tv4.validate(jsonData, schema, false, true);",
+									"",
+									"var contractArray = jsonData._embedded.contract;",
+									"var warrantyArray = jsonData._embedded.warranty;",
+									"",
+									"tests[productNumber + \"/\" + serialNumber + \" - Valid obligations found \"] = properResponse === true;",
+									"",
+									"if ((responseCode.code === 200 || responseCode.code === 400) && properResponse === true) {",
+									"    if (warrantyArray.length > 0) {",
+									"        var warrantyStartDate = warrantyArray[0].overallWarrantyStartDate;",
+									"        var warrantyEndDate = warrantyArray[0].overallWarrantyEndDate;",
+									"        if ((warrantyStartDate !== \"null\" && warrantyStartDate !== \"\") && (warrantyEndDate !== \"null\" && warrantyEndDate !== \"\")) {",
+									"            hasWarrantyDates = true;",
+									"        }",
+									"    }",
+									"    tests[productNumber + \"/\" + serialNumber + \" - GetObligations - Has warranty dates\"] = hasWarrantyDates === true;",
+									"",
+									"    if (contractArray.length > 0) {",
+									"        var contractStartDate = contractArray[0].overallContractStartDate;",
+									"        var contractEndDate = contractArray[0].overallContractEndDate;",
+									"        if ((contractStartDate !== \"null\" && contractStartDate !== \"\") && (contractEndDate !== \"null\" && contractEndDate !== \"\")) {",
+									"            hasServiceContractDates = true;",
+									"        }",
+									"    }",
+									"    tests[productNumber + \"/\" + serialNumber + \" - Has Service Contract dates\"] = hasServiceContractDates === true;",
+									"",
+									"    // if (warrantyArray.length > 0 && contractArray.length > 0) {",
+									"    //     console.log(productNumber + \"/\" + serialNumber + \" - \" + warrantyStartDate + \":\" + warrantyEndDate + \" - \" + contractStartDate + \":\" + contractEndDate);",
+									"    // }",
+									"",
+									"    //Settting warrantyStartDate and warrantyEndDate to null if warrantyArray is empty ",
+									"    if (warrantyArray.length <= 0) {",
+									"        console.log(\"Hello\")",
+									"        var warrantyStartDate = \"null\";",
+									"        var warrantyEndDate = \"null\";",
+									"    }",
+									"",
+									"    //Settting contractStartDate and contractEndDate to null if contractArray is empty ",
+									"    if (contractArray.length <= 0) {",
+									"        var contractStartDate = \"null\";",
+									"        var contractEndDate = \"null\";",
+									"    }",
+									"    ",
+									"    console.log(productNumber + \"/\" + serialNumber + \" - \" + \"WSD: \" +warrantyStartDate + \" : WED: \" + warrantyEndDate + \" - CSD: \" + contractStartDate + \" : CED: \" + contractEndDate);",
+									"",
+									"    result = {",
+									"        PN: productNumber,",
+									"        SN: serialNumber,",
+									"        WSD: warrantyStartDate,",
+									"        WED: warrantyEndDate,",
+									"        SCSD: contractStartDate,",
+									"        SCED: contractEndDate,",
+									"        existsIndicator: existsIndicator",
+									"    };",
+									"",
+									"    finalResultArray.add(result);",
+									"    jsonFormattedString = (JSON.stringify(finalResultArray));",
+									"    pm.environment.set(\"outputJSON\", jsonFormattedString);",
+									"",
+									"} else {",
+									"    tests[requestPN + \"/\" + requestSN + \": HTTPStatus OK?-> \"] = false;",
+									"    console.log(\"Improper response!!!\");",
+									"}",
+									"",
+									"if(finalIteration <= currentIteration)",
+									"{",
+									"    console.log(jsonFormattedString);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Token",
+								"value": "{{SEALS_AUTH_TOKEN}}"
+							},
+							{
+								"key": "Client-ID",
+								"value": "{{SEALS_AUTH_CLIENTID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseURL}}/GetObligations?serialNumber={{SN}}&productID={{PN}}&Mode=all",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"GetObligations"
+							],
+							"query": [
+								{
+									"key": "serialNumber",
+									"value": "{{SN}}"
+								},
+								{
+									"key": "productID",
+									"value": "{{PN}}"
+								},
+								{
+									"key": "Mode",
+									"value": "all"
+								}
+							]
+						},
+						"description": "GetObligations"
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "50134c83-161a-4568-b83e-1bb0468c33de",
+						"type": "text/javascript",
+						"exec": [
+							"var timestamp2 = new Date().toISOString();",
+							"var timestamp1 = timestamp2.substring(0, 19)+\"Z\";",
+							"postman.setEnvironmentVariable(\"notificationTimestamp\", timestamp1);",
+							"var d = new Date();",
+							"var milliseconds = d.getTime();",
+							"// var milliseconds = 1508479709185",
+							"// Four hours window in milliseconds 4*60*60*1000",
+							"var step = 14400000;",
+							"var secret = postman.getEnvironmentVariable(\"SEALS_AUTH_SECRET\");",
+							"// var secret = \"pepper\"",
+							"var t = parseInt(milliseconds/step);",
+							"// console.log(t);",
+							"var payload = t.toString()+secret;",
+							"// console.log(payload);",
+							"var shaEncoded = CryptoJS.SHA256(payload).toString();",
+							"// console.log(shaEncoded);",
+							"postman.setEnvironmentVariable(\"SEALS_AUTH_TOKEN\", shaEncoded);"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "c55d0230-9240-4984-b155-4ff9b7ff3c85",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"_postman_id": "fa48f619-d511-4dd5-9020-3e88e0687957",
+			"name": "PrinterWhiteList",
+			"item": [
+				{
+					"_postman_id": "5b59d935-6da9-4d92-8aa6-2f20da939b01",
+					"name": "ValidateDevice",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2620ed5e-e424-4473-9a47-fab252f54950",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"var deviceStatus = jsonData.status;",
+									"var jsonFormattedString;",
+									"var whiteListedPrintersArray = JSON.parse(pm.environment.get(\"whiteListedPrintersArray\"));",
+									"",
+									"// Extracting the parameters sent to the original request",
+									"",
+									"var params = {};",
+									"var paramsString = request.url.split('?')[1];",
+									"var eachParamArray = paramsString.split('&');",
+									"eachParamArray.forEach(function(param) {",
+									"    var key = param.split('=')[0];",
+									"    var value = param.split('=')[1];",
+									"    params[key] = value;",
+									"});",
+									"",
+									"var requestPN = params.pn;",
+									"var requestSN = params.sn;",
+									"",
+									"if (responseCode.code === 200 || responseCode.code === 400) {",
+									"    //Depending upon the \"status\", adding the SN to the environment variable as an array element",
+									"    if (deviceStatus === \"ok\") {",
+									"        whiteListedPrintersArray.add(requestSN);",
+									"        jsonFormattedString = (JSON.stringify(whiteListedPrintersArray));",
+									"        pm.environment.set(\"whiteListedPrintersArray\", jsonFormattedString);",
+									"    }",
+									"} else {",
+									"    tests[requestPN + \"/\" + requestSN + \": HTTPStatus OK?-> \"] = false;",
+									"    console.log(\"Improper response!!!\");",
+									"}"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "4cf24eb6-c259-489a-9592-55a39a5f2fcc",
+								"type": "text/javascript",
+								"exec": [
+									"// I like this very much, set up the environment in the first run, independently of current setup (thumbs up)",
+									"var iteration = pm.info.iteration;",
+									"",
+									"if (iteration === 0) {",
+									"    pm.environment.set(\"whiteListedPrintersArray\", \"[]\");",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cache-Control",
+								"value": "no-cache"
+							},
+							{
+								"key": "X-API-KEY",
+								"value": "2lLmjeQp7v9oMFErzD634seIu0ute3l1iuhlKlC5"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://cloudapi.heleni.me/api/ValidateDevice?sn={{SN}}&pn={{PN}}",
+							"protocol": "https",
+							"host": [
+								"cloudapi",
+								"heleni",
+								"me"
+							],
+							"path": [
+								"api",
+								"ValidateDevice"
+							],
+							"query": [
+								{
+									"key": "sn",
+									"value": "{{SN}}"
+								},
+								{
+									"key": "pn",
+									"value": "{{PN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"_postman_id": "9b4cd5bf-d8b3-410c-925f-a09344287580",
+			"name": "IsPrinterEntitled",
+			"item": [
+				{
+					"_postman_id": "4f51916c-e95b-40db-bd97-b0473b8b35f7",
+					"name": "IsPrinterEntitled",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3b25d1fe-e96a-4556-9730-1d278cd32e5d",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"var existsIndicator = jsonData._embedded.existsIndicator;",
+									"var whiteListedPrintersArray = pm.environment.get(\"whiteListedPrintersArray\");",
+									"",
+									"// Extracting the parameters sent to the original request",
+									"",
+									"var params = {};",
+									"var paramsString = request.url.split('?')[1];",
+									"var eachParamArray = paramsString.split('&');",
+									"eachParamArray.forEach(function(param) {",
+									"    var key = param.split('=')[0];",
+									"    var value = param.split('=')[1];",
+									"    params[key] = value;",
+									"});",
+									"var requestPN = params.productID;",
+									"var requestSN = params.serialNumber;",
+									"",
+									"if (whiteListedPrintersArray.includes(requestSN)) {",
+									"    tests[requestPN + \"/\" + requestSN + \"IsPrinterEntitled - Present in whitelist\"] = true;",
+									"    console.log(requestPN + \"/\" + requestSN + \" - Whitelisted by - owner\");",
+									"    if (responseCode.code === 200 || responseCode.code === 400) {",
+									"        if (Object.keys(data).length > 0) {",
+									"            tests[requestPN + \"/\" + requestSN + \" - IsPrinterEntitled - Entitlement consistent with SEALS\"] = data.existsIndicator === existsIndicator;",
+									"        }",
+									"    } else {",
+									"        tests[requestPN + \"/\" + requestSN + \": HTTPStatus OK?-> \"] = false;",
+									"        console.log(\"Improper response!!!\");",
+									"    }",
+									"} else {",
+									"    console.log(\"This product (\" + requestPN + \"/\" + requestSN + \") is not whitelisted\");",
+									"}"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "07fb8d25-c3d9-4939-964c-58d9df788aa8",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Token",
+								"value": "{{SEALS_AUTH_TOKEN}}"
+							},
+							{
+								"key": "Client-ID",
+								"value": "{{SEALS_AUTH_CLIENTID}}"
+							},
+							{
+								"key": "Cache-Control",
+								"value": "no-cache"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseURL}}/IsPrinterEntitled?serialNumber={{SN}}&productID={{PN}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"IsPrinterEntitled"
+							],
+							"query": [
+								{
+									"key": "serialNumber",
+									"value": "{{SN}}"
+								},
+								{
+									"key": "productID",
+									"value": "{{PN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ddd6c3d8-6ba5-41f0-9a03-9b20a21c7686",
+						"type": "text/javascript",
+						"exec": [
+							"var timestamp2 = new Date().toISOString();",
+							"var timestamp1 = timestamp2.substring(0, 19)+\"Z\";",
+							"postman.setEnvironmentVariable(\"notificationTimestamp\", timestamp1);",
+							"var d = new Date();",
+							"var milliseconds = d.getTime();",
+							"// var milliseconds = 1508479709185",
+							"// Four hours window in milliseconds 4*60*60*1000",
+							"var step = 14400000;",
+							"var secret = postman.getEnvironmentVariable(\"SEALS_AUTH_SECRET\");",
+							"// var secret = \"pepper\"",
+							"var t = parseInt(milliseconds/step);",
+							"// console.log(t);",
+							"var payload = t.toString()+secret;",
+							"// console.log(payload);",
+							"var shaEncoded = CryptoJS.SHA256(payload).toString();",
+							"// console.log(shaEncoded);",
+							"postman.setEnvironmentVariable(\"SEALS_AUTH_TOKEN\", shaEncoded);"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "fea0b5e8-4c81-47c4-8fde-e19946bd5fe5",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"_postman_id": "2eeb3f09-1b75-4d37-bed5-1ced0d559280",
+			"name": "isPrinterUnderSupportContract",
+			"item": [
+				{
+					"_postman_id": "dd3a8cb6-09ed-4dcd-9cf9-55dea5abf248",
+					"name": "IsPrinterUnderSupportContract",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9e5dfc14-d142-450c-a505-b79523192d11",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"var serialNumber = jsonData.serialNumber;",
+									"var productNumber = jsonData.productID;",
+									"var whiteListedPrintersArray = pm.environment.get(\"whiteListedPrintersArray\");",
+									"var isActive = jsonData.active;",
+									"",
+									"var params = {};",
+									"var paramsString = request.url.split('?')[1];",
+									"var eachParamArray = paramsString.split('&');",
+									"eachParamArray.forEach(function(param) {",
+									"    var key = param.split('=')[0];",
+									"    var value = param.split('=')[1];",
+									"    params[key] = value;",
+									"});",
+									"",
+									"var requestPN = params.productID;",
+									"var requestSN = params.serialNumber;",
+									"",
+									"if (whiteListedPrintersArray.includes(requestSN)) {",
+									"    if (responseCode.code === 200 || responseCode.code === 400) {",
+									"        tests[requestPN + \"/\" + requestSN + \" - Is under support contract\"] = isActive === \"TRUE\";",
+									"        if (Object.keys(data).length > 0) {",
+									"            // tests[requestPN + \"/\" + requestSN + \" Service Contract consistent with SEALS\"] = new Date(data.SCSD) === new Date(jsonData.overallContractStartDate) && new Date(data.SCED) === new Date(jsonData.overallContractEndDate);",
+									"            tests[requestPN + \"/\" + requestSN + \" - Service Contract consistent with SEALS\"] = data.SCSD === jsonData.overallContractStartDate && data.SCED === jsonData.overallContractEndDate;",
+									"        }",
+									"        console.log(requestPN + \"/\" + requestSN + \" - Under support contract until - \" + jsonData.overallContractEndDate);",
+									"    } else {",
+									"        tests[requestPN + \"/\" + requestSN + \": HTTPStatus OK?-> \"] = false;",
+									"        console.log(\"Improper response!!!\");",
+									"    }",
+									"} else {",
+									"    console.log(\"This product (\" + requestPN + \"/\" + requestSN + \") is not whitelisted\");",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Token",
+								"value": "{{SEALS_AUTH_TOKEN}}"
+							},
+							{
+								"key": "Client-ID",
+								"value": "{{SEALS_AUTH_CLIENTID}}"
+							},
+							{
+								"key": "Cache-Control",
+								"value": "no-cache"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseURL}}/IsPrinterUnderSupportContract?serialNumber={{SN}}&productID={{PN}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"IsPrinterUnderSupportContract"
+							],
+							"query": [
+								{
+									"key": "serialNumber",
+									"value": "{{SN}}"
+								},
+								{
+									"key": "productID",
+									"value": "{{PN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "79ee9a93-6673-4768-a376-c83bc6d292d6",
+						"type": "text/javascript",
+						"exec": [
+							"var timestamp2 = new Date().toISOString();",
+							"var timestamp1 = timestamp2.substring(0, 19)+\"Z\";",
+							"postman.setEnvironmentVariable(\"notificationTimestamp\", timestamp1);",
+							"var d = new Date();",
+							"var milliseconds = d.getTime();",
+							"// var milliseconds = 1508479709185",
+							"// Four hours window in milliseconds 4*60*60*1000",
+							"var step = 14400000;",
+							"var secret = postman.getEnvironmentVariable(\"SEALS_AUTH_SECRET\");",
+							"// var secret = \"pepper\"",
+							"var t = parseInt(milliseconds/step);",
+							"// console.log(t);",
+							"var payload = t.toString()+secret;",
+							"// console.log(payload);",
+							"var shaEncoded = CryptoJS.SHA256(payload).toString();",
+							"// console.log(shaEncoded);",
+							"postman.setEnvironmentVariable(\"SEALS_AUTH_TOKEN\", shaEncoded);"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "f4972f1b-b1a8-48a1-aa87-f460109addef",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "fcc28508-be32-49aa-bedf-4bedd842eb30",
+				"type": "text/javascript",
+				"exec": [
+					"var timestamp2 = new Date().toISOString();",
+					"var timestamp1 = timestamp2.substring(0, 19)+\"Z\";",
+					"postman.setEnvironmentVariable(\"notificationTimestamp\", timestamp1);",
+					"var d = new Date();",
+					"var milliseconds = d.getTime();",
+					"// var milliseconds = 1508479709185",
+					"// Four hours window in milliseconds 4*60*60*1000",
+					"var step = 14400000;",
+					"var secret = postman.getEnvironmentVariable(\"SEALS_AUTH_SECRET\");",
+					"// var secret = \"pepper\"",
+					"var t = parseInt(milliseconds/step);",
+					"// console.log(t);",
+					"var payload = t.toString()+secret;",
+					"// console.log(payload);",
+					"var shaEncoded = CryptoJS.SHA256(payload).toString();",
+					"// console.log(shaEncoded);",
+					"postman.setEnvironmentVariable(\"SEALS_AUTH_TOKEN\", shaEncoded);"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "3eb23272-aed9-47dd-a554-05b415390826",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
