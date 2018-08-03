@@ -7,19 +7,37 @@
 	},
 	"item": [
 		{
-			"_postman_id": "0fbbd656-df86-46e8-9238-87a17df49499",
+			"_postman_id": "591cf7dc-9e3b-4d90-8b72-383c320f2707",
 			"name": "GetObligations",
 			"item": [
 				{
-					"_postman_id": "166a7754-557b-4c50-9abf-df8bdcacb588",
+					"_postman_id": "c5a0c4e6-1018-41d9-ba82-457ddcfd96cc",
 					"name": "GetObligations",
 					"event": [
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "a67202bb-4526-4e89-96e2-4e2713276d58",
+								"id": "fb09ada3-4dbf-402f-86b4-16da0dc64705",
 								"type": "text/javascript",
 								"exec": [
+									"var timestamp2 = new Date().toISOString();",
+									"var timestamp1 = timestamp2.substring(0, 19)+\"Z\";",
+									"postman.setEnvironmentVariable(\"notificationTimestamp\", timestamp1);",
+									"var d = new Date();",
+									"var milliseconds = d.getTime();",
+									"// var milliseconds = 1508479709185",
+									"// Four hours window in milliseconds 4*60*60*1000",
+									"var step = 14400000;",
+									"var secret = postman.getEnvironmentVariable(\"SEALS_AUTH_SECRET\");",
+									"// var secret = \"pepper\"",
+									"var t = parseInt(milliseconds/step);",
+									"// console.log(t);",
+									"var payload = t.toString()+secret;",
+									"// console.log(payload);",
+									"var shaEncoded = CryptoJS.SHA256(payload).toString();",
+									"// console.log(shaEncoded);",
+									"postman.setEnvironmentVariable(\"SEALS_AUTH_TOKEN\", shaEncoded);",
+									"",
 									"// I like this very much, set up the environment in the first run, independently of current setup (thumbs up)",
 									"var iteration = pm.info.iteration;",
 									"",
@@ -457,11 +475,11 @@
 			]
 		},
 		{
-			"_postman_id": "f9c79bc4-9ab2-4a38-9ed6-0ec8015049b8",
+			"_postman_id": "60b45acd-3903-4c8f-ab19-bf9722d1f70a",
 			"name": "PrinterWhiteList",
 			"item": [
 				{
-					"_postman_id": "a029df1c-5a60-4256-99dd-58e1a94d577f",
+					"_postman_id": "90c6a1e5-b9a1-4247-9ee0-4e21bca2610f",
 					"name": "ValidateDevice",
 					"event": [
 						{
@@ -561,14 +579,52 @@
 					},
 					"response": []
 				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4ea17d3c-ed1c-4a7b-992d-0f7580caaf91",
+						"type": "text/javascript",
+						"exec": [
+							"var timestamp2 = new Date().toISOString();",
+							"var timestamp1 = timestamp2.substring(0, 19)+\"Z\";",
+							"postman.setEnvironmentVariable(\"notificationTimestamp\", timestamp1);",
+							"var d = new Date();",
+							"var milliseconds = d.getTime();",
+							"// var milliseconds = 1508479709185",
+							"// Four hours window in milliseconds 4*60*60*1000",
+							"var step = 14400000;",
+							"var secret = postman.getEnvironmentVariable(\"SEALS_AUTH_SECRET\");",
+							"// var secret = \"pepper\"",
+							"var t = parseInt(milliseconds/step);",
+							"// console.log(t);",
+							"var payload = t.toString()+secret;",
+							"// console.log(payload);",
+							"var shaEncoded = CryptoJS.SHA256(payload).toString();",
+							"// console.log(shaEncoded);",
+							"postman.setEnvironmentVariable(\"SEALS_AUTH_TOKEN\", shaEncoded);"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "df5e9a2e-5de1-445c-8ebe-2202349f5db7",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
 			]
 		},
 		{
-			"_postman_id": "52a849e3-3f7a-4569-bb83-70c9900979f5",
+			"_postman_id": "0f5f384c-798e-4e31-bf5c-e9a6092d8b7a",
 			"name": "IsPrinterEntitled",
 			"item": [
 				{
-					"_postman_id": "60fc6a01-a95b-4b7e-81c9-8e9c02f3c632",
+					"_postman_id": "f893819d-0925-454a-af7f-db7bb36d6d0f",
 					"name": "IsPrinterEntitled",
 					"event": [
 						{
@@ -705,11 +761,11 @@
 			]
 		},
 		{
-			"_postman_id": "4f101ca1-3a55-448d-8d0f-453445d6fdac",
+			"_postman_id": "84188527-4f83-4b26-b45c-1844322d1381",
 			"name": "isPrinterUnderSupportContract",
 			"item": [
 				{
-					"_postman_id": "cb214b03-abbb-4b66-af92-beeff5035e7e",
+					"_postman_id": "502b4f9b-a81e-431b-9950-e308425f2549",
 					"name": "IsPrinterUnderSupportContract",
 					"event": [
 						{
